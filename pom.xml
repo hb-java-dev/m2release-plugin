@@ -4,7 +4,7 @@
 	<groupId>org.jenkins-ci.plugins.m2release</groupId>
 	<artifactId>m2release</artifactId>
 	<packaging>hpi</packaging>
-	<version>0.14.0-SNAPSHOT</version>
+	<version>0.14.0.HB-SNAPSHOT</version>
 
 	<parent>
 		<groupId>org.jenkins-ci.plugins</groupId>
@@ -12,7 +12,7 @@
 		<version>1.509.2</version>
 	</parent>
 
-	<name>Jenkins Maven Release Plug-in Plug-in</name>
+	<name>Jenkins Maven Release Plug-in Plug-in (HB modification)</name>
 	<description>A plug-in that enables you to perform releases using the maven-release-plugin from Jenkins.</description>
 	<url>http://wiki.jenkins-ci.org/display/JENKINS/M2+Release+Plugin</url>
 
@@ -35,11 +35,15 @@
 			<id>imod</id>
 			<name>Dominik Bartholdi</name>
 		</developer>
+		<developer>
+			<id>mastr</id>
+			<name>Martin Strunc</name>
+		</developer>
 	</developers>
 
 	<scm>
-		<connection>scm:git:git://github.com/jenkinsci/m2release-plugin.git</connection>
-		<developerConnection>scm:git:https://github.com/jenkinsci/m2release-plugin.git</developerConnection>
+		<connection>scm:git:git://github.com/hb-java-dev/m2release-plugin.git</connection>
+		<developerConnection>scm:git:https://github.com/hb-java-dev/m2release-plugin.git</developerConnection>
 		<url>https://github.com/jenkinsci/m2release-plugin/</url>
 	</scm>
 
@@ -140,6 +144,8 @@
 
 
 	<!-- Jenkins is no longer synced to central so we need to bootstrap -->
+	<!-- HB: Jenkins repo is proxied by local nexus repository -->
+	<!-- 
 	<repositories>
 		<repository>
 			<id>repo.jenkins-ci.org</id>
@@ -155,5 +161,5 @@
 		<url>http://repo.jenkins-ci.org/public/</url>
 		</pluginRepository>
 	</pluginRepositories>
-
+ 	-->
 </project>
