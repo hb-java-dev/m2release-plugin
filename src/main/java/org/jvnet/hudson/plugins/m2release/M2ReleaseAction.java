@@ -26,6 +26,7 @@ package org.jvnet.hudson.plugins.m2release;
 import hudson.maven.MavenModule;
 import hudson.maven.MavenModuleSet;
 import hudson.model.ParameterValue;
+import hudson.model.AbstractProject;
 import hudson.model.BooleanParameterValue;
 import hudson.model.Hudson;
 import hudson.model.ParameterDefinition;
@@ -67,13 +68,15 @@ import org.kohsuke.stapler.StaplerResponse;
 public class M2ReleaseAction implements PermalinkProjectAction {
 
 	private MavenModuleSet project;
+	private String nextDevelopmentVersionMode;
 	private boolean selectCustomScmCommentPrefix;
 	private boolean selectCustomScmTag = false;
 	private boolean selectAppendHudsonUsername;
 	private boolean selectScmCredentials;
 
-	public M2ReleaseAction(MavenModuleSet project, boolean selectCustomScmCommentPrefix, boolean selectAppendHudsonUsername, boolean selectScmCredentials) {
+	public M2ReleaseAction(MavenModuleSet project, String nextDevelopmentVersionMode, boolean selectCustomScmCommentPrefix, boolean selectAppendHudsonUsername, boolean selectScmCredentials) {
 		this.project = project;
+		this.nextDevelopmentVersionMode = nextDevelopmentVersionMode;
 		this.selectCustomScmCommentPrefix = selectCustomScmCommentPrefix;
 		this.selectAppendHudsonUsername = selectAppendHudsonUsername;
 		this.selectScmCredentials = selectScmCredentials;
@@ -225,13 +228,11 @@ public class M2ReleaseAction implements PermalinkProjectAction {
 		final String developmentVersion = getString("developmentVersion", httpParams); //$NON-NLS-1$
 
 		// TODO make this nicer by showing a html error page.
-		// this will throw an exception so control will terminate if the dev
-		// version is not a "SNAPSHOT".
+		// this will throw an exception so control will terminate if the dev version is not a "SNAPSHOT".
 		enforceDeveloperVersion(developmentVersion);
 
 		// get the normal job parameters (adapted from
-		// hudson.model.ParametersDefinitionProperty._doBuild(StaplerRequest,
-		// StaplerResponse))
+		// hudson.model.ParametersDefinitionProperty._doBuild(StaplerRequest, StaplerResponse))
 		List<ParameterValue> values = new ArrayList<ParameterValue>();
 		JSONObject formData = req.getSubmittedForm();
 		JSONArray a = JSONArray.fromObject(formData.get("parameter"));
@@ -289,8 +290,7 @@ public class M2ReleaseAction implements PermalinkProjectAction {
 			resp.sendRedirect(req.getContextPath() + '/' + project.getUrl());
 		} else {
 			// redirect to error page.
-			// TODO try and get this to go back to the form page with an
-			// error at the top.
+			// TODO try and get this to go back to the form page with an error at the top.
 			resp.sendRedirect(req.getContextPath() + '/' + project.getUrl() + '/' + getUrlName() + "/failed");
 		}
 	}
@@ -307,6 +307,30 @@ public class M2ReleaseAction implements PermalinkProjectAction {
 		return null;
 	}
 
+	public boolean isContainsSnapshotDependency() {
+		return !isNotContainsSnapshotDependency();
+	}
+	
+	public boolean isNotContainsSnapshotDependency() {
+		return getSnapshotDependencyList().isEmpty();
+	}
+	
+	@SuppressWarnings("rawtypes")
+	public List<MavenDependencyResult> getSnapshotDependencyList() {
+		final List<MavenDependencyResult> result = new ArrayList<MavenDependencyResult>();
+		// walk all upstream projects tree and checks snapshot dependencies
+		for (final AbstractProject upstrProject : project.getUpstreamProjects()) {
+			if (upstrProject instanceof MavenModuleSet) {
+				final MavenDependencyResult depResult = new MavenDependencyResult((MavenModuleSet)upstrProject); 
+				if (depResult.isSnapshotVersion()) {
+					result.add(depResult);
+				}
+			}
+		}
+		// return list of found snapshot dependencies
+		return result;
+	}
+	
 	/**
 	 * returns the value of the key as a String. if multiple values have been
 	 * submitted, the first one will be returned.

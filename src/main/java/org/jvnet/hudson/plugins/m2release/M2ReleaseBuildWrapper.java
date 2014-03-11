@@ -102,11 +102,14 @@ public class M2ReleaseBuildWrapper extends BuildWrapper {
 	
 	public int                            numberOfReleaseBuildsToKeep  = DescriptorImpl.DEFAULT_NUMBER_OF_RELEASE_BUILDS_TO_KEEP;
 	
+	public String						  nextDevelopmentVersionMode   = DescriptorImpl.DEFAULT_NEXT_DEVELOPEMENT_VERSION_MODE;
+	
 	@DataBoundConstructor
-	public M2ReleaseBuildWrapper(String releaseGoals, String dryRunGoals, boolean selectCustomScmCommentPrefix, boolean selectAppendHudsonUsername, boolean selectScmCredentials, String releaseEnvVar, String scmUserEnvVar, String scmPasswordEnvVar, int numberOfReleaseBuildsToKeep) {
+	public M2ReleaseBuildWrapper(String releaseGoals, String dryRunGoals, String nextDevelopmentVersionMode, boolean selectCustomScmCommentPrefix, boolean selectAppendHudsonUsername, boolean selectScmCredentials, String releaseEnvVar, String scmUserEnvVar, String scmPasswordEnvVar, int numberOfReleaseBuildsToKeep) {
 		super();
 		this.releaseGoals = releaseGoals;
 		this.dryRunGoals = dryRunGoals;
+		this.nextDevelopmentVersionMode = nextDevelopmentVersionMode;
 		this.selectCustomScmCommentPrefix = selectCustomScmCommentPrefix;
 		this.selectAppendHudsonUsername = selectAppendHudsonUsername;
 		this.selectScmCredentials = selectScmCredentials;
@@ -359,6 +362,13 @@ public class M2ReleaseBuildWrapper extends BuildWrapper {
 		return StringUtils.isBlank(dryRunGoals) ? DescriptorImpl.DEFAULT_DRYRUN_GOALS : dryRunGoals;
 	}
 	
+	public String getNextDevelopmentVersionMode() {
+		return nextDevelopmentVersionMode;
+	}
+
+	public void setNextDevelopmentVersionMode(String nextDevelopmentVersionMode) {
+		this.nextDevelopmentVersionMode = nextDevelopmentVersionMode;
+	}
 
 	/**
 	 * Evaluate if the current build should be a release build.
@@ -377,7 +387,7 @@ public class M2ReleaseBuildWrapper extends BuildWrapper {
 
 	@Override
 	public Action getProjectAction(@SuppressWarnings("rawtypes") AbstractProject job) {
-		return new M2ReleaseAction((MavenModuleSet) job, selectCustomScmCommentPrefix, selectAppendHudsonUsername, selectScmCredentials);
+		return new M2ReleaseAction((MavenModuleSet) job, nextDevelopmentVersionMode, selectCustomScmCommentPrefix, selectAppendHudsonUsername, selectScmCredentials);
 	}
 
 	/**
@@ -470,6 +480,13 @@ public class M2ReleaseBuildWrapper extends BuildWrapper {
 		public static final boolean    DEFAULT_SELECT_APPEND_HUDSON_USERNAME    = false;
 		public static final boolean    DEFAULT_SELECT_SCM_CREDENTIALS           = false;
 
+        public static final String     NEXT_DEVELOPMENT_VERSION_MODE_LATEST  = "latest";  //$NON-NLS-1$
+        public static final String     NEXT_DEVELOPMENT_VERSION_MODE_INDEX_1 = "Index-1"; //$NON-NLS-1$
+        public static final String     NEXT_DEVELOPMENT_VERSION_MODE_INDEX_2 = "Index-2"; //$NON-NLS-1$
+        public static final String     NEXT_DEVELOPMENT_VERSION_MODE_INDEX_3 = "Index-3"; //$NON-NLS-1$
+        
+        public static final String     DEFAULT_NEXT_DEVELOPEMENT_VERSION_MODE = NEXT_DEVELOPMENT_VERSION_MODE_LATEST;
+		
 		public static final int        DEFAULT_NUMBER_OF_RELEASE_BUILDS_TO_KEEP = 1;
 
 		private boolean nexusSupport  = false;

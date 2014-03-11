@@ -18,6 +18,8 @@
 		<f:textbox field="numberOfReleaseBuildsToKeep" value="${h.defaulted(instance.numberOfReleaseBuildsToKeep, descriptor.DEFAULT_NUMBER_OF_RELEASE_BUILDS_TO_KEEP)}" />
 	</f:entry>
 
+	<!-- HB custom - deprecated in M2ReleaseBuildWrapper - property has no effect in m2 release process -->
+	<!--
 	<f:entry title="Default versioning mode" help="/plugin/m2release/help-projectConfig-versioningMode.html">
 		<select name="defaultVersioningMode">
 			<f:option value="${descriptor.VERSIONING_AUTO}" selected="${descriptor.VERSIONING_AUTO == h.defaulted(instance.defaultVersioningMode,descriptor.DEFAULT_VERSIONING)}">None</f:option>
@@ -25,6 +27,18 @@
 			<f:option value="${descriptor.VERSIONING_SPECIFY_VERSION}" selected="${descriptor.VERSIONING_SPECIFY_VERSION == h.defaulted(instance.defaultVersioningMode,descriptor.DEFAULT_VERSIONING)}">Specify one version for all modules</f:option>
 		</select>
 	</f:entry>
+	-->
+	
+	<!-- HB custom field  -->
+	<f:entry title="Next developement version mode" help="/plugin/m2release/help-projectConfig-nextDevelopmentModeType.html">
+		<select name="nextDevelopmentVersionMode">
+			<f:option value="${descriptor.NEXT_DEVELOPMENT_VERSION_MODE_LATEST}"  selected="${descriptor.NEXT_DEVELOPMENT_VERSION_MODE_LATEST  == h.defaulted(instance.nextDevelopmentVersionMode,descriptor.DEFAULT_NEXT_DEVELOPEMENT_VERSION_MODE)}">Increase version at latest position in version</f:option>
+			<f:option value="${descriptor.NEXT_DEVELOPMENT_VERSION_MODE_INDEX_1}" selected="${descriptor.NEXT_DEVELOPMENT_VERSION_MODE_INDEX_1 == h.defaulted(instance.nextDevelopmentVersionMode,descriptor.DEFAULT_NEXT_DEVELOPEMENT_VERSION_MODE)}">Increase major version</f:option>
+			<f:option value="${descriptor.NEXT_DEVELOPMENT_VERSION_MODE_INDEX_2}" selected="${descriptor.NEXT_DEVELOPMENT_VERSION_MODE_INDEX_2 == h.defaulted(instance.nextDevelopmentVersionMode,descriptor.DEFAULT_NEXT_DEVELOPEMENT_VERSION_MODE)}">Increase minor version</f:option>
+			<f:option value="${descriptor.NEXT_DEVELOPMENT_VERSION_MODE_INDEX_3}" selected="${descriptor.NEXT_DEVELOPMENT_VERSION_MODE_INDEX_3 == h.defaulted(instance.nextDevelopmentVersionMode,descriptor.DEFAULT_NEXT_DEVELOPEMENT_VERSION_MODE)}">Increase hotfix version</f:option>
+		</select>
+	</f:entry>
+	<!-- /HB custom field -->
 	
 	<f:entry title="Preselect 'Specify custom SCM comment prefix'" help="/plugin/m2release/help-projectConfig-selectCustomScmCommentPrefix.html">
 		<f:checkbox name="selectCustomScmCommentPrefix" checked="${h.defaulted(instance.selectCustomScmCommentPrefix,descriptor.DEFAULT_SELECT_CUSTOM_SCM_COMMENT_PREFIX)}"/>
