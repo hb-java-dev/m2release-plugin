@@ -485,7 +485,7 @@ public class M2ReleaseBuildWrapper extends BuildWrapper {
         public static final String     NEXT_DEVELOPMENT_VERSION_MODE_INDEX_2 = "Index-2"; //$NON-NLS-1$
         public static final String     NEXT_DEVELOPMENT_VERSION_MODE_INDEX_3 = "Index-3"; //$NON-NLS-1$
         
-        public static final String     DEFAULT_NEXT_DEVELOPEMENT_VERSION_MODE = NEXT_DEVELOPMENT_VERSION_MODE_LATEST;
+        public static final String     DEFAULT_NEXT_DEVELOPEMENT_VERSION_MODE = NEXT_DEVELOPMENT_VERSION_MODE_INDEX_2;
 		
 		public static final int        DEFAULT_NUMBER_OF_RELEASE_BUILDS_TO_KEEP = 1;
 

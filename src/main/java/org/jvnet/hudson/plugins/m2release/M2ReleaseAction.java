@@ -53,6 +53,7 @@ import net.sf.json.JSONObject;
 
 import org.apache.commons.lang.StringUtils;
 import org.apache.maven.shared.release.versions.DefaultVersionInfo;
+import org.apache.maven.shared.release.versions.VersionInfo;
 import org.apache.maven.shared.release.versions.VersionParseException;
 import org.kohsuke.stapler.StaplerRequest;
 import org.kohsuke.stapler.StaplerResponse;
@@ -153,8 +154,8 @@ public class M2ReleaseAction implements PermalinkProjectAction {
 		final MavenModule rootModule = getRootModule();
 		if (rootModule != null && StringUtils.isNotBlank(rootModule.getVersion())) {
 			try {
-				DefaultVersionInfo dvi = new DefaultVersionInfo(rootModule.getVersion());
-				version = dvi.getReleaseVersionString();
+				VersionInfo vi = new M2ReleaseVersionInfo(rootModule.getVersion(), nextDevelopmentVersionMode);
+				version = vi.getReleaseVersionString();
 			} catch (VersionParseException vpEx) {
 				Logger logger = Logger.getLogger(this.getClass().getName());
 				logger.log(Level.WARNING, "Failed to compute next version.", vpEx);
@@ -187,8 +188,8 @@ public class M2ReleaseAction implements PermalinkProjectAction {
 		final MavenModule rootModule = getRootModule();
 		if (rootModule != null && StringUtils.isNotBlank(rootModule.getVersion())) {
 			try {
-				DefaultVersionInfo dvi = new DefaultVersionInfo(rootModule.getVersion());
-				version = dvi.getNextVersion().getSnapshotVersionString();
+				VersionInfo vi = new M2ReleaseVersionInfo(rootModule.getVersion(), nextDevelopmentVersionMode);
+				version = vi.getNextVersion().getSnapshotVersionString();
 			} catch (Exception vpEx) {
 				Logger logger = Logger.getLogger(this.getClass().getName());
 				logger.log(Level.WARNING, "Failed to compute next version.", vpEx);
@@ -210,7 +211,7 @@ public class M2ReleaseAction implements PermalinkProjectAction {
 		// good old http...
 		Map<?, ?> httpParams = req.getParameterMap();
 
-		final boolean appendHudsonBuildNumber = httpParams.containsKey("appendHudsonBuildNumber"); //$NON-NLS-1$
+		// final boolean appendHudsonBuildNumber = httpParams.containsKey("appendHudsonBuildNumber"); //$NON-NLS-1$
 		final boolean closeNexusStage = httpParams.containsKey("closeNexusStage"); //$NON-NLS-1$
 		final String repoDescription = closeNexusStage ? getString("repoDescription", httpParams) : ""; //$NON-NLS-1$
 		final boolean specifyScmCredentials = httpParams.containsKey("specifyScmCredentials"); //$NON-NLS-1$
@@ -231,8 +232,7 @@ public class M2ReleaseAction implements PermalinkProjectAction {
 		// this will throw an exception so control will terminate if the dev version is not a "SNAPSHOT".
 		enforceDeveloperVersion(developmentVersion);
 
-		// get the normal job parameters (adapted from
-		// hudson.model.ParametersDefinitionProperty._doBuild(StaplerRequest, StaplerResponse))
+		// get the normal job parameters (adapted from hudson.model.ParametersDefinitionProperty._doBuild(StaplerRequest, StaplerResponse))
 		List<ParameterValue> values = new ArrayList<ParameterValue>();
 		JSONObject formData = req.getSubmittedForm();
 		JSONArray a = JSONArray.fromObject(formData.get("parameter"));
