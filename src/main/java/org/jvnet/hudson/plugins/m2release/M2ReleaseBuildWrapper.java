@@ -42,6 +42,7 @@ import hudson.model.Item;
 import hudson.model.Run;
 import hudson.security.Permission;
 import hudson.security.PermissionGroup;
+import hudson.security.PermissionScope;
 import hudson.tasks.BuildWrapper;
 import hudson.tasks.BuildWrapperDescriptor;
 import hudson.tasks.Builder;
@@ -464,7 +465,8 @@ public class M2ReleaseBuildWrapper extends BuildWrapper {
 				tmpPerm = new Permission(Item.PERMISSIONS,
 				                         "Release", //$NON-NLS-1$
 				                          Messages._CreateReleasePermission_Description(),
-				                          Hudson.ADMINISTER);
+				                          Hudson.ADMINISTER,
+				                          PermissionScope.JENKINS);
 			}
 			CREATE_RELEASE = tmpPerm;
 		}
