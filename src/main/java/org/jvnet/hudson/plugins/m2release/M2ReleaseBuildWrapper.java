@@ -169,8 +169,10 @@ public class M2ReleaseBuildWrapper extends BuildWrapper {
 		}
 		else {
 			buildGoals.append(getReleaseGoals());
+			// set project description for release only (not for dryRun)
+			build.setDescription(args.getReleaseVersion());
 		}
-
+		
 		build.addAction(new M2ReleaseArgumentInterceptorAction(buildGoals.toString(), args.getScmPassword()));
 		build.addAction(new M2ReleaseBadgeAction(args.getReleaseVersion(), args.isDryRun()));
 
